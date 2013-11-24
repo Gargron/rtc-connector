@@ -6,7 +6,7 @@ JavaScript WebRTC connector class. **Work in progress**
 Usage
 -----
 
-Assuming you use require.js to load it:
+Assuming you use [require.js][1] to load it:
 
 ```javascript
 require(['rtc-connector'], function (webrtc) {
@@ -64,3 +64,18 @@ require(['rtc-connector'], function (webrtc) {
   peerConnector.callAllPeers();
 });
 ```
+
+Help! How does WebRTC work?
+---------------------------
+
+Yeah, I didn't know either, and I found it to be quite confusing, which is why I'm adding this section, just in case. You probably do know that WebRTC is about peer-to-peer communications.
+
+The truth is, you still need a central server to coordinate the start of such communications — that is the "signalling channel".
+
+Whoever you want to communicate with is called a "peer", and that's what `RTCPeerConnection` is all about. Also, `MediaStream`s is what is being transmitted. Such a "peer" object keeps track of the incoming stream (remote) that you are receiving and the outgoing stream (local) that you are sending to that peer.
+
+When you want to initiate communication with a peer, you generate an "offer", and send that over through the signalling channel. The receiver of that offer then generates an "answer" and sends it back. At the same time, `RTCPeerConnection` generates an "ICE candidate" (not a German high-speed train) which also needs to be delivered to the remote peer. And when you receive such an ICE candidate, you also have to add it to the corresponding peer object. That ICE is basically about finding a route (IPs, ports, etc) directly from the browser of one peer to the browser of the other peer.
+
+I hope this short passage sheds some light on why I designed this class and named the methods this way.
+
+Please also note that `MediaStream`s are a whole Pandora's Box on their own. The most talked-about use case is acquiring access to the user's camera and microphone through `navigator.getUserMedia`, but in theory, `<video>` and `<audio>` contents are `MediaStream`s as well. There is a [whole draft on processing and mixing those][2], though unfortunately at the time of writing it is not very complete and barely implemented.

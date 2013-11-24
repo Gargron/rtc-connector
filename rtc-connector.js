@@ -36,17 +36,18 @@ define(function (require, exports, module) {
   var Peer = function (id, signalFn, onStreamFn, offStreamFn) {
     var self = this;
 
-    this.id = id;
-    this.connection = new RTCPeerConnection(peerConfig, peerConstraints);
+    this.id           = id;
+    this.connection   = new RTCPeerConnection(peerConfig, peerConstraints);
     this.remoteStream = null;
-    this.localStream = null;
-    this.signalFn = signalFn;
-    this.onStreamFn = onStreamFn;
-    this.offStreamFn = offStreamFn;
+    this.localStream  = null;
+    this.signalFn     = signalFn;
+    this.onStreamFn   = onStreamFn;
+    this.offStreamFn  = offStreamFn;
 
     this.connection.onicecandidate = function (e) {
       if (e.candidate) {
         console.log('Ice candidate generated', e.candidate);
+
         self.deliver('candidate', e.candidate.candidate);
         self.connection.onicecandidate = null;
       } else {
@@ -57,6 +58,7 @@ define(function (require, exports, module) {
     this.connection.onnegotiationneeded = function () {
       self.connection.createOffer(function (offer) {
         console.log('Offer created', offer);
+
         toWhom.connection.setLocalDescription(offer);
         toWhom.deliver('offer', offer);
       }, function (err) {
@@ -112,22 +114,24 @@ define(function (require, exports, module) {
 
   Peer.prototype.addCandidate = function (candidate) {
     console.log('Registering ice candidate', candidate);
+
     this.connection.addIceCandidate(new RTCIceCandidate({
       candidate: candidate
     }));
   };
 
   var RtcConnector = function (signalFn, onStreamFn, offStreamFn) {
-    this.peers = [];
+    this.peers                = [];
     this.globalOutgoingStream = null;
-    this.signalFn = signalFn;
-    this.onStreamFn = onStreamFn;
-    this.offStreamFn = offStreamFn;
+    this.signalFn             = signalFn;
+    this.onStreamFn           = onStreamFn;
+    this.offStreamFn          = offStreamFn;
   };
 
   RtcConnector.prototype.prepareCall = function (toWhom) {
     toWhom.connection.createOffer(function (offer) {
       console.log('Offer created', offer);
+
       toWhom.connection.setLocalDescription(offer);
       toWhom.deliver('offer', offer);
     }, function (err) {
@@ -148,6 +152,7 @@ define(function (require, exports, module) {
 
     toWhom.connection.createAnswer(function (answer) {
       console.log('Answer created', answer);
+
       toWhom.connection.setLocalDescription(answer);
       toWhom.deliver('answer', answer);
     }, function (err) {
