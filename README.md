@@ -79,3 +79,9 @@ When you want to initiate communication with a peer, you generate an "offer", an
 I hope this short passage sheds some light on why I designed this class and named the methods this way.
 
 Please also note that `MediaStream`s are a whole Pandora's Box on their own. The most talked-about use case is acquiring access to the user's camera and microphone through `navigator.getUserMedia`, but in theory, `<video>` and `<audio>` contents are `MediaStream`s as well. There is a [whole draft on processing and mixing those][2], though unfortunately at the time of writing it is not very complete and barely implemented.
+
+Also, [general spec][3].
+
+[1]: http://www.requirejs.org/
+[2]: https://dvcs.w3.org/hg/audio/raw-file/tip/streams/StreamProcessing.html
+[3]: http://dev.w3.org/2011/webrtc/editor/webrtc.html
